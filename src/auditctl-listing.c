@@ -74,12 +74,14 @@ int key_match(const struct audit_rule_data *r)
 
 /*
  * This function detects if we have a watch. A watch is detected when we
- * have syscall == all and a perm field.
+ * have action == always, syscall == all, and a perm field.
  */
 static int is_watch(const struct audit_rule_data *r)
 {
 	unsigned int i, perm = 0, all = 1;
 
+	if (r->action != AUDIT_ALWAYS)
+		return 0;
 	for (i = 0; i < r->field_count; i++) {
 		int field = r->fields[i] & ~AUDIT_OPERATORS;
 		if (field == AUDIT_PERM)
